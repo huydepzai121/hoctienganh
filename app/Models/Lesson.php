@@ -46,6 +46,13 @@ class Lesson extends Model
         return $this->hasMany(UserProgress::class);
     }
 
+    public function completedUsers()
+    {
+        return $this->belongsToMany(User::class, 'lesson_user')
+                    ->withPivot('completed_at')
+                    ->withTimestamps();
+    }
+
     // Scopes
     public function scopePublished($query)
     {
