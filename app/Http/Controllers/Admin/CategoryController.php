@@ -23,7 +23,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.categories.create');
+        return view('admin.categories.create-adminlte');
     }
 
     /**
@@ -52,7 +52,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return view('admin.categories.show', compact('category'));
+        return view('admin.categories.show-adminlte', compact('category'));
     }
 
     /**
@@ -60,7 +60,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('admin.categories.edit', compact('category'));
+        return view('admin.categories.edit-adminlte', compact('category'));
     }
 
     /**
