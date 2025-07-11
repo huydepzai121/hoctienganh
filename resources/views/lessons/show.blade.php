@@ -149,41 +149,79 @@
 @push('scripts')
 <script>
 function markAsCompleted(lessonId) {
+    // Get CSRF token
+    const token = document.querySelector('meta[name="csrf-token"]');
+    if (!token) {
+        alert('CSRF token not found!');
+        return;
+    }
+
+    // Show loading state
+    const btn = document.getElementById('completeBtn');
+    if (!btn) {
+        alert('Button not found!');
+        return;
+    }
+
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
+    btn.disabled = true;
+
+    console.log('Sending request to:', `/lessons/${lessonId}/complete`);
+
     fetch(`/lessons/${lessonId}/complete`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
+            'X-CSRF-TOKEN': token.getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({})
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
         if (data.success) {
             // Update button
-            const btn = document.getElementById('completeBtn');
             btn.outerHTML = '<span class="badge bg-success fs-6"><i class="fas fa-check me-1"></i>Đã hoàn thành</span>';
-            
+
             // Update progress bar
             const progressBar = document.querySelector('.progress-bar');
-            progressBar.style.width = data.progress + '%';
-            
+            if (progressBar) {
+                progressBar.style.width = data.progress + '%';
+                progressBar.setAttribute('aria-valuenow', data.progress);
+            }
+
             // Update progress text
             const progressText = document.querySelector('.text-muted');
-            progressText.textContent = `Tiến độ: ${data.progress}%`;
-            
+            if (progressText) {
+                progressText.textContent = `Tiến độ: ${data.progress}%`;
+            }
+
             // Update sidebar icon
             const sidebarIcon = document.querySelector(`[data-lesson-id="${lessonId}"] i`);
             if (sidebarIcon) {
                 sidebarIcon.className = 'fas fa-check-circle text-success';
             }
-            
+
             // Show success message
-            alert(data.message);
+            alert(data.message || 'Bài học đã được đánh dấu hoàn thành!');
+        } else {
+            throw new Error(data.message || 'Unknown error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        // Restore button
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        alert('Có lỗi xảy ra: ' + error.message);
     });
 }
 </script>
