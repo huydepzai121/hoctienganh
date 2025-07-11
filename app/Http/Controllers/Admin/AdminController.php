@@ -34,6 +34,6 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recent_enrollments', 'popular_courses'));
+        return view('admin.dashboard-pure', compact('stats', 'recent_enrollments', 'popular_courses'));
     }
 }
