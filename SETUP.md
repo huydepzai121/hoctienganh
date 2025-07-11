@@ -52,6 +52,9 @@ mysql -u root -p -e "CREATE DATABASE hoctienganh CHARACTER SET utf8mb4 COLLATE u
 
 # Chạy migration và seeder
 php artisan migrate --seed
+
+# Nếu gặp lỗi duplicate entry, chạy:
+php artisan migrate:fresh --seed
 ```
 
 ### 6. Build Assets
@@ -137,7 +140,11 @@ php artisan view:clear
 
 ### Reset Database
 ```bash
+# Xóa toàn bộ và tạo lại database
 php artisan migrate:fresh --seed
+
+# Hoặc chỉ chạy seeder lại (an toàn hơn)
+php artisan db:seed
 ```
 
 ## 🌐 URLs Quan Trọng
