@@ -102,10 +102,16 @@ class CourseSeeder extends Seeder
         ];
 
         foreach ($courses as $courseData) {
-            $course = Course::create($courseData);
+            // Kiểm tra xem course đã tồn tại chưa
+            $existingCourse = Course::where('slug', $courseData['slug'])->first();
 
-            // Tạo một số bài học mẫu cho mỗi khóa học
-            $this->createSampleLessons($course);
+            if (!$existingCourse) {
+                $course = Course::create($courseData);
+                // Tạo một số bài học mẫu cho mỗi khóa học
+                $this->createSampleLessons($course);
+            } else {
+                echo "Course '{$courseData['title']}' already exists, skipping...\n";
+            }
         }
     }
 
@@ -145,7 +151,12 @@ class CourseSeeder extends Seeder
             $lessonData['course_id'] = $course->id;
             $lessonData['slug'] = Str::slug($lessonData['title']) . '-' . $course->id . '-' . $lessonData['order'];
 
-            Lesson::create($lessonData);
+            // Kiểm tra xem lesson đã tồn tại chưa
+            $existingLesson = Lesson::where('slug', $lessonData['slug'])->first();
+
+            if (!$existingLesson) {
+                Lesson::create($lessonData);
+            }
         }
     }
 }
