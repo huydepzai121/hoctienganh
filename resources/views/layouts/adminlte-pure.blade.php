@@ -116,7 +116,13 @@
               <p>Bài Học</p>
             </a>
           </li>
-          
+          <li class="nav-item">
+            <a href="{{ route('admin.quizzes.index') }}" class="nav-link {{ request()->routeIs('admin.quizzes.*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-question-circle"></i>
+              <p>Quiz</p>
+            </a>
+          </li>
+
           <li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
           <li class="nav-item">
             <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
