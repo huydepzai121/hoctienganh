@@ -126,9 +126,9 @@
         </div>
     </div>
 
-    <!-- Quiz Statistics Row -->
+    <!-- Quiz & Reviews Statistics Row -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="info-box bg-gradient-primary">
                 <span class="info-box-icon"><i class="fas fa-question-circle"></i></span>
                 <div class="info-box-content">
@@ -138,12 +138,12 @@
                         <div class="progress-bar" style="width: {{ ($stats['total_quizzes'] / 100) * 100 }}%"></div>
                     </div>
                     <span class="progress-description">
-                        Tăng {{ rand(5, 15) }}% so với tuần trước
+                        <a href="{{ route('admin.quizzes.index') }}" class="text-white">Xem chi tiết</a>
                     </span>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="info-box bg-gradient-warning">
                 <span class="info-box-icon"><i class="fas fa-chart-line"></i></span>
                 <div class="info-box-content">
@@ -158,24 +158,32 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="info-box bg-gradient-success">
-                <span class="info-box-icon"><i class="fas fa-trophy"></i></span>
+                <span class="info-box-icon"><i class="fas fa-star"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text">Tỷ lệ đạt TB</span>
-                    <span class="info-box-number">
-                        @php
-                            $passedAttempts = \App\Models\QuizAttempt::where('is_passed', true)->count();
-                            $totalAttempts = $stats['total_quiz_attempts'];
-                            $passRate = $totalAttempts > 0 ? ($passedAttempts / $totalAttempts) * 100 : 0;
-                        @endphp
-                        {{ number_format($passRate, 1) }}%
-                    </span>
+                    <span class="info-box-text">Tổng Đánh Giá</span>
+                    <span class="info-box-number">{{ number_format($stats['total_reviews']) }}</span>
                     <div class="progress">
-                        <div class="progress-bar" style="width: {{ $passRate }}%"></div>
+                        <div class="progress-bar" style="width: {{ ($stats['total_reviews'] / 500) * 100 }}%"></div>
                     </div>
                     <span class="progress-description">
-                        Tăng {{ rand(2, 8) }}% so với tuần trước
+                        <a href="{{ route('admin.reviews.index') }}" class="text-white">Xem chi tiết</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="info-box bg-gradient-danger">
+                <span class="info-box-icon"><i class="fas fa-clock"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Chờ Duyệt</span>
+                    <span class="info-box-number">{{ number_format($stats['pending_reviews']) }}</span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: {{ $stats['total_reviews'] > 0 ? ($stats['pending_reviews'] / $stats['total_reviews']) * 100 : 0 }}%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <a href="{{ route('admin.reviews.index', ['status' => 'pending']) }}" class="text-white">Duyệt ngay</a>
                     </span>
                 </div>
             </div>

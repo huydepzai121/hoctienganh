@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Enrollment;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -26,6 +27,9 @@ class AdminController extends Controller
             'published_courses' => Course::where('is_published', true)->count(),
             'total_quizzes' => Quiz::count(),
             'total_quiz_attempts' => QuizAttempt::count(),
+            'total_reviews' => Review::count(),
+            'pending_reviews' => Review::where('is_approved', false)->count(),
+            'approved_reviews' => Review::where('is_approved', true)->count(),
         ];
 
         $recent_enrollments = Enrollment::with(['user', 'course'])

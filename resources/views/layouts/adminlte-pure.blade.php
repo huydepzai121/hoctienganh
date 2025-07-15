@@ -122,6 +122,12 @@
               <p>Quiz</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{ route('admin.reviews.index') }}" class="nav-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-star"></i>
+              <p>Đánh giá</p>
+            </a>
+          </li>
 
           <li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
           <li class="nav-item">

@@ -158,7 +158,7 @@
             @endif
             
             <!-- Instructor Info -->
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h4 class="mb-0">Giảng viên</h4>
                 </div>
@@ -180,6 +180,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Course Reviews -->
+            <x-course-reviews :course="$course" />
         </div>
         
         <div class="col-lg-4">

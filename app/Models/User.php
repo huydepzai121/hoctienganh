@@ -84,6 +84,16 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(Review::class)->approved();
+    }
+
     // Helper methods
     public function isAdmin()
     {

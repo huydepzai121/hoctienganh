@@ -61,6 +61,16 @@ class Course extends Model
         return $this->hasMany(Quiz::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(Review::class)->approved();
+    }
+
     // Scopes
     public function scopePublished($query)
     {
@@ -81,5 +91,57 @@ class Course extends Model
     public function getLessonCountAttribute()
     {
         return $this->lessons()->count();
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->approvedReviews()->avg('rating') ?: 0;
+    }
+
+    public function getReviewCountAttribute()
+    {
+        return $this->approvedReviews()->count();
+    }
+
+    public function getRatingStarsAttribute()
+    {
+        $rating = $this->average_rating;
+        $fullStars = floor($rating);
+        $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
+        $emptyStars = 5 - $fullStars - $halfStar;
+
+        return [
+            'full' => $fullStars,
+            'half' => $halfStar,
+            'empty' => $emptyStars,
+            'rating' => round($rating, 1)
+        ];
+    }
+
+    public function getRatingDistributionAttribute()
+    {
+        $total = $this->review_count;
+        if ($total === 0) return [];
+
+        $distribution = [];
+        for ($i = 5; $i >= 1; $i--) {
+            $count = $this->approvedReviews()->where('rating', $i)->count();
+            $percentage = $total > 0 ? round(($count / $total) * 100) : 0;
+            $distribution[$i] = [
+                'count' => $count,
+                'percentage' => $percentage
+            ];
+        }
+        return $distribution;
+    }
+
+    public function hasUserReviewed(User $user): bool
+    {
+        return $this->reviews()->where('user_id', $user->id)->exists();
+    }
+
+    public function getUserReview(User $user)
+    {
+        return $this->reviews()->where('user_id', $user->id)->first();
     }
 }

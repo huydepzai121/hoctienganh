@@ -6,12 +6,14 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\LessonController as AdminLessonController;
 use App\Http\Controllers\Admin\QuizController as AdminQuizController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +54,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
     Route::get('/leaderboard/quiz/{quiz}', [LeaderboardController::class, 'quiz'])->name('leaderboard.quiz');
     Route::get('/leaderboard/user/{user}', [LeaderboardController::class, 'user'])->name('leaderboard.user');
+
+    // Review Routes
+    Route::post('/courses/{course}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
 // Profile Routes
@@ -79,6 +86,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Users Management
     Route::resource('users', AdminUserController::class);
+
+    // Reviews Management
+    Route::resource('reviews', AdminReviewController::class)->only(['index', 'show', 'destroy']);
+    Route::patch('reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
+    Route::patch('reviews/{review}/reject', [AdminReviewController::class, 'reject'])->name('reviews.reject');
+    Route::post('reviews/bulk-approve', [AdminReviewController::class, 'bulkApprove'])->name('reviews.bulk-approve');
+    Route::post('reviews/bulk-reject', [AdminReviewController::class, 'bulkReject'])->name('reviews.bulk-reject');
+    Route::post('reviews/bulk-delete', [AdminReviewController::class, 'bulkDelete'])->name('reviews.bulk-delete');
 });
 
 require __DIR__.'/auth.php';
