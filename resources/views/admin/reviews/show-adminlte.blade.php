@@ -131,45 +131,39 @@
 </style>
 @endpush
 
+@section('content_header')
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1 class="m-0 text-dark font-weight-bold">
+            <i class="fas fa-star text-warning mr-2"></i>
+            Chi tiết đánh giá
+        </h1>
+        <p class="text-muted">Xem thông tin chi tiết về đánh giá từ học viên</p>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.reviews.index') }}">Đánh giá</a></li>
+            <li class="breadcrumb-item active">Chi tiết</li>
+        </ol>
+    </div>
+</div>
+@endsection
+
 @section('content')
-<div class="content-wrapper">
-    <!-- Content Header -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0 text-dark font-weight-bold">
-                        <i class="fas fa-star text-warning mr-2"></i>
-                        Chi tiết đánh giá
-                    </h1>
-                    <p class="text-muted">Xem thông tin chi tiết về đánh giá từ học viên</p>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.reviews.index') }}">Đánh giá</a></li>
-                        <li class="breadcrumb-item active">Chi tiết</li>
-                    </ol>
-                </div>
-            </div>
+
+<!-- Status Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert {{ $review->is_approved ? 'alert-success' : 'alert-warning' }} alert-dismissible">
+            <h5>
+                <i class="icon fas {{ $review->is_approved ? 'fa-check-circle' : 'fa-clock' }}"></i>
+                Trạng thái: {{ $review->is_approved ? 'Đã duyệt' : 'Chờ duyệt' }}
+            </h5>
+            {{ $review->is_approved ? 'Đánh giá này đã được duyệt và hiển thị công khai.' : 'Đánh giá này đang chờ được duyệt.' }}
         </div>
     </div>
-
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <!-- Status Banner -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="alert {{ $review->is_approved ? 'alert-success' : 'alert-warning' }} alert-dismissible">
-                        <h5>
-                            <i class="icon fas {{ $review->is_approved ? 'fa-check-circle' : 'fa-clock' }}"></i>
-                            Trạng thái: {{ $review->is_approved ? 'Đã duyệt' : 'Chờ duyệt' }}
-                        </h5>
-                        {{ $review->is_approved ? 'Đánh giá này đã được duyệt và hiển thị công khai.' : 'Đánh giá này đang chờ được duyệt.' }}
-                    </div>
-                </div>
-            </div>
+</div>
 
             <div class="row">
                 <div class="col-lg-8">
@@ -341,10 +335,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</div>
-
 @push('scripts')
 <script>
 function confirmAction(message, type = 'warning') {

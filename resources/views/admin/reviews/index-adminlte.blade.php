@@ -147,115 +147,109 @@
 </style>
 @endpush
 
+@section('content_header')
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1 class="m-0 text-dark font-weight-bold">
+            <i class="fas fa-star text-warning mr-2"></i>
+            Quản lý đánh giá
+        </h1>
+        <p class="text-muted">Quản lý và duyệt đánh giá từ học viên</p>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Đánh giá</li>
+        </ol>
+    </div>
+</div>
+@endsection
+
 @section('content')
-<div class="content-wrapper">
-    <!-- Content Header -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0 text-dark font-weight-bold">
-                        <i class="fas fa-star text-warning mr-2"></i>
-                        Quản lý đánh giá
-                    </h1>
-                    <p class="text-muted">Quản lý và duyệt đánh giá từ học viên</p>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Đánh giá</li>
-                    </ol>
-                </div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card">
+            <div class="stats-number">{{ number_format($reviews->total()) }}</div>
+            <div class="stats-label">
+                <i class="fas fa-star mr-2"></i>Tổng đánh giá
             </div>
         </div>
     </div>
-
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <!-- Statistics Cards -->
-            <div class="row mb-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-card">
-                        <div class="stats-number">{{ number_format($reviews->total()) }}</div>
-                        <div class="stats-label">
-                            <i class="fas fa-star mr-2"></i>Tổng đánh giá
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <div class="stats-number">{{ $reviews->where('is_approved', false)->count() }}</div>
-                        <div class="stats-label">
-                            <i class="fas fa-clock mr-2"></i>Chờ duyệt
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <div class="stats-number">{{ $reviews->where('is_approved', true)->count() }}</div>
-                        <div class="stats-label">
-                            <i class="fas fa-check-circle mr-2"></i>Đã duyệt
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                        <div class="stats-number">{{ number_format($reviews->avg('rating'), 1) }}</div>
-                        <div class="stats-label">
-                            <i class="fas fa-chart-line mr-2"></i>Điểm TB
-                        </div>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <div class="stats-number">{{ $reviews->where('is_approved', false)->count() }}</div>
+            <div class="stats-label">
+                <i class="fas fa-clock mr-2"></i>Chờ duyệt
             </div>
-
-            <!-- Filters -->
-            <div class="card filter-card mb-4">
-                <div class="card-body">
-                    <form method="GET" action="{{ route('admin.reviews.index') }}" class="row align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label font-weight-bold">
-                                <i class="fas fa-filter mr-1"></i>Trạng thái
-                            </label>
-                            <select name="status" class="form-control">
-                                <option value="">Tất cả trạng thái</option>
-                                <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>
-                                    <i class="fas fa-clock"></i> Chờ duyệt
-                                </option>
-                                <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>
-                                    <i class="fas fa-check"></i> Đã duyệt
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label font-weight-bold">
-                                <i class="fas fa-book mr-1"></i>Khóa học
-                            </label>
-                            <select name="course_id" class="form-control">
-                                <option value="">Tất cả khóa học</option>
-                                @foreach($courses as $course)
-                                    <option value="{{ $course->id }}" {{ request('course_id') == $course->id ? 'selected' : '' }}>
-                                        {{ $course->title }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label font-weight-bold">
-                                <i class="fas fa-search mr-1"></i>Tìm kiếm
-                            </label>
-                            <input type="text" name="search" class="form-control search-box"
-                                   placeholder="Tìm theo tên, khóa học, nội dung..."
-                                   value="{{ request('search') }}">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary btn-modern btn-block">
-                                <i class="fas fa-search mr-2"></i>Lọc
-                            </button>
-                        </div>
-                    </form>
-                </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <div class="stats-number">{{ $reviews->where('is_approved', true)->count() }}</div>
+            <div class="stats-label">
+                <i class="fas fa-check-circle mr-2"></i>Đã duyệt
             </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <div class="stats-number">{{ number_format($reviews->avg('rating'), 1) }}</div>
+            <div class="stats-label">
+                <i class="fas fa-chart-line mr-2"></i>Điểm TB
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card filter-card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ route('admin.reviews.index') }}" class="row align-items-end">
+            <div class="col-md-3">
+                <label class="form-label font-weight-bold">
+                    <i class="fas fa-filter mr-1"></i>Trạng thái
+                </label>
+                <select name="status" class="form-control">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>
+                        <i class="fas fa-clock"></i> Chờ duyệt
+                    </option>
+                    <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>
+                        <i class="fas fa-check"></i> Đã duyệt
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label font-weight-bold">
+                    <i class="fas fa-book mr-1"></i>Khóa học
+                </label>
+                <select name="course_id" class="form-control">
+                    <option value="">Tất cả khóa học</option>
+                    @foreach($courses as $course)
+                        <option value="{{ $course->id }}" {{ request('course_id') == $course->id ? 'selected' : '' }}>
+                            {{ $course->title }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label font-weight-bold">
+                    <i class="fas fa-search mr-1"></i>Tìm kiếm
+                </label>
+                <input type="text" name="search" class="form-control search-box"
+                       placeholder="Tìm theo tên, khóa học, nội dung..."
+                       value="{{ request('search') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-modern btn-block">
+                    <i class="fas fa-search mr-2"></i>Lọc
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
             <!-- Bulk Actions -->
             <div class="bulk-actions">
