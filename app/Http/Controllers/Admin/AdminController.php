@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Category;
 use App\Models\Enrollment;
+use App\Models\Quiz;
+use App\Models\QuizAttempt;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -20,8 +22,10 @@ class AdminController extends Controller
             'total_enrollments' => Enrollment::count(),
             'active_students' => User::whereHas('role', function($q) {
                 $q->where('name', 'student');
-            })->where('is_active', true)->count(),
+            })->count(),
             'published_courses' => Course::where('is_published', true)->count(),
+            'total_quizzes' => Quiz::count(),
+            'total_quiz_attempts' => QuizAttempt::count(),
         ];
 
         $recent_enrollments = Enrollment::with(['user', 'course'])
@@ -34,6 +38,6 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.dashboard-pure', compact('stats', 'recent_enrollments', 'popular_courses'));
+        return view('admin.dashboard-adminlte', compact('stats', 'recent_enrollments', 'popular_courses'));
     }
 }

@@ -28,7 +28,9 @@ class QuizController extends Controller
         // Get user's previous attempts
         $attempts = $quiz->attempts()->where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
         $canAttempt = $attempts->count() < $quiz->max_attempts;
-        $bestScore = $attempts->max('score_percentage') ?? 0;
+        $bestScore = $attempts->map(function($attempt) {
+            return $attempt->score_percentage;
+        })->max() ?? 0;
 
         return view('quizzes.show', compact('quiz', 'attempts', 'canAttempt', 'bestScore'));
     }

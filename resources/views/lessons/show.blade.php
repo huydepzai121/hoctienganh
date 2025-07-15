@@ -123,6 +123,72 @@
                     </div>
                 </div>
 
+                <!-- Quiz Section -->
+                @if($lesson->quizzes && $lesson->quizzes->count() > 0)
+                    <div class="card mt-4">
+                        <div class="card-header bg-warning">
+                            <h5 class="mb-0">
+                                <i class="fas fa-quiz me-2"></i>
+                                Quiz cho bài học này
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach($lesson->quizzes as $quiz)
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ $quiz->title }}</h6>
+                                                @if($quiz->description)
+                                                    <p class="card-text text-muted">{{ Str::limit($quiz->description, 100) }}</p>
+                                                @endif
+                                                <div class="row text-center mb-3">
+                                                    <div class="col-4">
+                                                        <small class="text-muted">Câu hỏi</small>
+                                                        <div class="fw-bold">{{ $quiz->questions->count() }}</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <small class="text-muted">Thời gian</small>
+                                                        <div class="fw-bold">{{ $quiz->time_limit ?? 'Không giới hạn' }}</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <small class="text-muted">Điểm qua</small>
+                                                        <div class="fw-bold">{{ $quiz->passing_score }}%</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                @php
+                                                    $userAttempts = $quiz->attempts()->where('user_id', auth()->id())->get();
+                                                    $bestScore = $userAttempts->map(function($attempt) {
+                                                        return $attempt->score_percentage;
+                                                    })->max() ?? 0;
+                                                    $isPassed = $bestScore >= $quiz->passing_score;
+                                                @endphp
+                                                
+                                                @if($userAttempts->count() > 0)
+                                                    <div class="mb-2">
+                                                        <small class="text-muted">Điểm cao nhất:</small>
+                                                        <span class="badge bg-{{ $isPassed ? 'success' : 'warning' }} ms-1">
+                                                            {{ $bestScore }}%
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                                
+                                                <div class="d-grid">
+                                                    <a href="{{ route('quizzes.show', $quiz) }}" class="btn btn-{{ $isPassed ? 'success' : 'primary' }}">
+                                                        <i class="fas fa-{{ $isPassed ? 'check' : 'play' }} me-1"></i>
+                                                        {{ $userAttempts->count() > 0 ? ($isPassed ? 'Đã hoàn thành' : 'Làm lại') : 'Bắt đầu Quiz' }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Navigation -->
                 <div class="d-flex justify-content-between mt-4">
                     <div>

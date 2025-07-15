@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->text('question');
-            $table->string('type')->default('multiple_choice'); // multiple_choice, true_false, fill_blank
+            $table->string('question_type')->default('multiple_choice'); // multiple_choice, true_false, fill_blank
             $table->text('explanation')->nullable();
             $table->string('image')->nullable();
             $table->string('audio')->nullable();

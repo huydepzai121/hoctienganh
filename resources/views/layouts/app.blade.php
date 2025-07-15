@@ -80,6 +80,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('courses.my') }}">Khóa Học Của Tôi</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('leaderboard.index') }}">
+                                <i class="fas fa-trophy me-1"></i>Bảng Xếp Hạng
+                            </a>
+                        </li>
                     @endauth
                 </ul>
 

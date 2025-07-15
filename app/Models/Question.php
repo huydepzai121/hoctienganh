@@ -11,7 +11,7 @@ class Question extends Model
 
     protected $fillable = [
         'question',
-        'type',
+        'question_type',
         'explanation',
         'image',
         'audio',
@@ -40,5 +40,11 @@ class Question extends Model
     public function getCorrectAnswerAttribute()
     {
         return $this->correctAnswers()->first();
+    }
+
+    public function isCorrectAnswer($userAnswer)
+    {
+        $correctAnswer = $this->correctAnswers()->first();
+        return $correctAnswer && $correctAnswer->id == $userAnswer;
     }
 }

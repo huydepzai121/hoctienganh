@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
@@ -38,6 +40,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-courses', [CourseController::class, 'myCourses'])->name('courses.my');
     Route::get('/lessons/{lesson:slug}', [LessonController::class, 'show'])->name('lessons.show');
     Route::post('/lessons/{lesson}/complete', [LessonController::class, 'complete'])->name('lessons.complete');
+    
+    // Quiz Routes
+    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    Route::post('/quizzes/{quiz}/start', [QuizController::class, 'start'])->name('quizzes.start');
+    Route::get('/quiz-attempts/{attempt}', [QuizController::class, 'take'])->name('quizzes.take');
+    Route::post('/quiz-attempts/{attempt}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
+    Route::get('/quiz-attempts/{attempt}/result', [QuizController::class, 'result'])->name('quizzes.result');
+    
+    // Leaderboard Routes
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+    Route::get('/leaderboard/quiz/{quiz}', [LeaderboardController::class, 'quiz'])->name('leaderboard.quiz');
+    Route::get('/leaderboard/user/{user}', [LeaderboardController::class, 'user'])->name('leaderboard.user');
 });
 
 // Profile Routes
