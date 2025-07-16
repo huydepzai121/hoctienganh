@@ -128,6 +128,29 @@
               <p>Đánh giá</p>
             </a>
           </li>
+          <li class="nav-item {{ request()->routeIs('admin.discussion*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->routeIs('admin.discussion*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-comments"></i>
+              <p>
+                Thảo luận
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.discussions.index') }}" class="nav-link {{ request()->routeIs('admin.discussions.*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Quản lý thảo luận</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.discussion-categories.index') }}" class="nav-link {{ request()->routeIs('admin.discussion-categories.*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh mục thảo luận</p>
+                </a>
+              </li>
+            </ul>
+          </li>
 
           <li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
           <li class="nav-item">

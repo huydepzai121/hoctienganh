@@ -89,6 +89,21 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
+    public function discussions()
+    {
+        return $this->hasMany(Discussion::class);
+    }
+
+    public function discussionReplies()
+    {
+        return $this->hasMany(DiscussionReply::class);
+    }
+
+    public function discussionVotes()
+    {
+        return $this->hasMany(DiscussionVote::class);
+    }
+
     public function approvedReviews()
     {
         return $this->hasMany(Review::class)->approved();

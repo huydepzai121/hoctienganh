@@ -14,6 +14,11 @@ use App\Http\Controllers\Admin\LessonController as AdminLessonController;
 use App\Http\Controllers\Admin\QuizController as AdminQuizController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\DiscussionCategoryController as AdminDiscussionCategoryController;
+use App\Http\Controllers\Admin\DiscussionController as AdminDiscussionController;
+use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\DiscussionReplyController;
+use App\Http\Controllers\DiscussionVoteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,6 +66,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
+// Discussions
+Route::resource('discussions', DiscussionController::class)->parameters(['discussions' => 'discussion:slug']);
+
+// Discussion Replies
+Route::middleware('auth')->group(function () {
+    Route::post('discussions/{discussion}/replies', [DiscussionReplyController::class, 'store'])->name('discussion-replies.store');
+    Route::patch('discussion-replies/{reply}', [DiscussionReplyController::class, 'update'])->name('discussion-replies.update');
+    Route::delete('discussion-replies/{reply}', [DiscussionReplyController::class, 'destroy'])->name('discussion-replies.destroy');
+    Route::patch('discussion-replies/{reply}/best-answer', [DiscussionReplyController::class, 'markAsBestAnswer'])->name('discussion-replies.best-answer');
+    Route::patch('discussion-replies/{reply}/solution', [DiscussionReplyController::class, 'markAsSolution'])->name('discussion-replies.solution');
+});
+
+// Discussion Voting
+Route::middleware('auth')->group(function () {
+    Route::post('discussions/{discussion}/vote', [DiscussionVoteController::class, 'voteDiscussion'])->name('discussions.vote');
+    Route::post('discussion-replies/{reply}/vote', [DiscussionVoteController::class, 'voteReply'])->name('discussion-replies.vote');
+});
+
 // Profile Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -94,6 +117,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('reviews/bulk-approve', [AdminReviewController::class, 'bulkApprove'])->name('reviews.bulk-approve');
     Route::post('reviews/bulk-reject', [AdminReviewController::class, 'bulkReject'])->name('reviews.bulk-reject');
     Route::post('reviews/bulk-delete', [AdminReviewController::class, 'bulkDelete'])->name('reviews.bulk-delete');
+
+    // Discussion Categories Management
+    Route::resource('discussion-categories', AdminDiscussionCategoryController::class);
+    Route::patch('discussion-categories/{discussionCategory}/toggle-status', [AdminDiscussionCategoryController::class, 'toggleStatus'])->name('discussion-categories.toggle-status');
+
+    // Discussions Management
+    Route::resource('discussions', AdminDiscussionController::class)->only(['index', 'show', 'destroy']);
+    Route::patch('discussions/{discussion}/status', [AdminDiscussionController::class, 'updateStatus'])->name('discussions.update-status');
+    Route::patch('discussions/{discussion}/toggle-pin', [AdminDiscussionController::class, 'togglePin'])->name('discussions.toggle-pin');
+    Route::patch('discussions/{discussion}/toggle-featured', [AdminDiscussionController::class, 'toggleFeatured'])->name('discussions.toggle-featured');
+    Route::post('discussions/bulk-action', [AdminDiscussionController::class, 'bulkAction'])->name('discussions.bulk-action');
 });
 
 require __DIR__.'/auth.php';

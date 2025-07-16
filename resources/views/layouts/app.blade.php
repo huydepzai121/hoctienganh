@@ -76,6 +76,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('courses.index') }}">Khóa Học</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('discussions.index') }}">
+                            <i class="fas fa-comments me-1"></i>Thảo Luận
+                        </a>
+                    </li>
                     @auth
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('courses.my') }}">Khóa Học Của Tôi</a>
