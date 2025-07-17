@@ -2,284 +2,87 @@
 
 @section('title', $discussion->title)
 
-@push('styles')
-<style>
-.discussion-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem 0;
-    margin-bottom: 2rem;
-}
-
-.discussion-card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
-}
-
-.user-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.user-avatar-small {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.vote-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 1rem;
-}
-
-.vote-btn {
-    border: none;
-    background: none;
-    font-size: 1.5rem;
-    color: #6c757d;
-    transition: all 0.3s ease;
-    padding: 0.25rem;
-}
-
-.vote-btn:hover {
-    color: #007bff;
-    transform: scale(1.1);
-}
-
-.vote-btn.voted-up {
-    color: #28a745;
-}
-
-.vote-btn.voted-down {
-    color: #dc3545;
-}
-
-.vote-count {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin: 0.5rem 0;
-}
-
-.reply-card {
-    border-left: 4px solid #e9ecef;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 0 10px 10px 0;
-}
-
-.reply-card.best-answer {
-    border-left-color: #28a745;
-    background: #d4edda;
-}
-
-.reply-card.solution {
-    border-left-color: #007bff;
-    background: #d1ecf1;
-}
-
-.nested-reply {
-    margin-left: 2rem;
-    border-left: 2px solid #dee2e6;
-    padding-left: 1rem;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.action-btn {
-    border: none;
-    background: none;
-    color: #6c757d;
-    font-size: 0.9rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.action-btn:hover {
-    background: #e9ecef;
-    color: #495057;
-}
-
-.badge-best-answer {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    color: white;
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 15px;
-    margin-left: 0.5rem;
-}
-
-.badge-solution {
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    color: white;
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 15px;
-    margin-left: 0.5rem;
-}
-
-.reply-form {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-top: 2rem;
-}
-
-.category-badge {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 15px;
-    text-decoration: none;
-    margin-right: 0.5rem;
-}
-
-.stats-item {
-    text-align: center;
-    padding: 0.5rem;
-}
-
-.stats-number {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-}
-
-.stats-label {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.8);
-}
-
-.discussion-meta {
-    color: rgba(255,255,255,0.9);
-    margin-bottom: 1rem;
-}
-
-.discussion-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    margin-top: -1rem;
-    position: relative;
-    z-index: 1;
-}
-
-.status-badge {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    margin-left: 1rem;
-}
-
-.pinned-badge {
-    background: linear-gradient(45deg, #ffc107, #ff8f00);
-    color: white;
-    font-size: 0.7rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 10px;
-    margin-right: 0.5rem;
-}
-
-.featured-badge {
-    background: linear-gradient(45deg, #dc3545, #c82333);
-    color: white;
-    font-size: 0.7rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 10px;
-    margin-right: 0.5rem;
-}
-</style>
-@endpush
-
 @section('content')
-<!-- Discussion Header -->
-<div class="discussion-header">
+<div class="container-fluid bg-primary text-white py-5 mb-4">
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
-                <div class="d-flex align-items-start mb-2">
+            <div class="col-lg-8">
+                <!-- Badges -->
+                <div class="mb-3">
                     @if($discussion->is_pinned)
-                        <span class="pinned-badge">
-                            <i class="fas fa-thumbtack mr-1"></i>Ghim
+                        <span class="badge bg-warning text-dark me-2">
+                            <i class="fas fa-thumbtack me-1"></i>Ghim
                         </span>
                     @endif
                     @if($discussion->is_featured)
-                        <span class="featured-badge">
-                            <i class="fas fa-star mr-1"></i>Nổi bật
+                        <span class="badge bg-danger me-2">
+                            <i class="fas fa-star me-1"></i>Nổi bật
                         </span>
                     @endif
-                    <h1 class="h2 mb-0">{{ $discussion->title }}</h1>
                     @if($discussion->status === 'solved')
-                        <span class="status-badge bg-success text-white">
-                            <i class="fas fa-check mr-1"></i>Đã giải quyết
+                        <span class="badge bg-success me-2">
+                            <i class="fas fa-check-circle me-1"></i>Đã giải quyết
                         </span>
                     @elseif($discussion->status === 'closed')
-                        <span class="status-badge bg-secondary text-white">
-                            <i class="fas fa-lock mr-1"></i>Đã đóng
+                        <span class="badge bg-secondary me-2">
+                            <i class="fas fa-lock me-1"></i>Đã đóng
                         </span>
                     @endif
                 </div>
                 
-                <div class="discussion-meta">
-                    <img src="{{ $discussion->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($discussion->user->name) . '&background=fff&color=667eea' }}" 
-                         alt="Avatar" class="user-avatar mr-2">
-                    <strong>{{ $discussion->user->name }}</strong>
-                    <span class="mx-2">•</span>
-                    <span>{{ $discussion->created_at->diffForHumans() }}</span>
-                    @if($discussion->last_activity_at && $discussion->last_activity_at != $discussion->created_at)
-                        <span class="mx-2">•</span>
-                        <span>Hoạt động cuối: {{ $discussion->last_activity_at->diffForHumans() }}</span>
-                    @endif
+                <!-- Title -->
+                <h1 class="display-6 fw-bold mb-4">{{ $discussion->title }}</h1>
+                
+                <!-- Meta Info -->
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ $discussion->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($discussion->user->name) . '&background=fff&color=007bff' }}" 
+                             alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+                        <div>
+                            <div class="fw-bold">{{ $discussion->user->name }}</div>
+                            <small class="opacity-75">{{ $discussion->created_at->diffForHumans() }}</small>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="mt-3">
+                
+                <!-- Category & Course -->
+                <div class="d-flex flex-wrap gap-2">
                     <a href="{{ route('discussions.index', ['category' => $discussion->category->id]) }}" 
-                       class="category-badge text-white"
-                       style="background-color: {{ $discussion->category->color }}">
+                       class="btn btn-outline-light btn-sm">
                         @if($discussion->category->icon)
-                            <i class="{{ $discussion->category->icon }} mr-1"></i>
+                            <i class="{{ $discussion->category->icon }} me-1"></i>
                         @endif
                         {{ $discussion->category->name }}
                     </a>
                     
                     @if($discussion->course)
                         <a href="{{ route('discussions.index', ['course' => $discussion->course->id]) }}" 
-                           class="category-badge bg-info text-white">
-                            <i class="fas fa-book mr-1"></i>{{ $discussion->course->title }}
+                           class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-book me-1"></i>{{ $discussion->course->title }}
                         </a>
                     @endif
                 </div>
             </div>
             
-            <div class="col-md-4">
-                <div class="row text-center">
+            <!-- Stats -->
+            <div class="col-lg-4">
+                <div class="row text-center g-3">
                     <div class="col-4">
-                        <div class="stats-item">
-                            <div class="stats-number">{{ $discussion->votes_count }}</div>
-                            <div class="stats-label">Votes</div>
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <div class="h4 mb-0">{{ $discussion->votes_count ?? 0 }}</div>
+                            <small>Votes</small>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="stats-item">
-                            <div class="stats-number">{{ $discussion->replies_count }}</div>
-                            <div class="stats-label">Trả lời</div>
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <div class="h4 mb-0">{{ $discussion->replies_count ?? 0 }}</div>
+                            <small>Trả lời</small>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="stats-item">
-                            <div class="stats-number">{{ number_format($discussion->views_count) }}</div>
-                            <div class="stats-label">Lượt xem</div>
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <div class="h4 mb-0">{{ $discussion->views_count ?? 0 }}</div>
+                            <small>Lượt xem</small>
                         </div>
                     </div>
                 </div>
@@ -289,307 +92,415 @@
 </div>
 
 <div class="container">
-    <!-- Discussion Content -->
-    <div class="discussion-content">
-        <div class="row">
-            <div class="col-md-1">
-                @auth
-                    <div class="vote-buttons">
-                        <button class="vote-btn vote-up {{ $discussion->getUserVoteType(auth()->id()) === 'up' ? 'voted-up' : '' }}" 
-                                data-type="up" data-id="{{ $discussion->id }}" data-model="discussion">
-                            <i class="fas fa-chevron-up"></i>
-                        </button>
-                        <div class="vote-count">{{ $discussion->getVoteScore() }}</div>
-                        <button class="vote-btn vote-down {{ $discussion->getUserVoteType(auth()->id()) === 'down' ? 'voted-down' : '' }}" 
-                                data-type="down" data-id="{{ $discussion->id }}" data-model="discussion">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
-                @else
-                    <div class="vote-buttons">
-                        <div class="vote-btn">
-                            <i class="fas fa-chevron-up"></i>
-                        </div>
-                        <div class="vote-count">{{ $discussion->getVoteScore() }}</div>
-                        <div class="vote-btn">
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                    </div>
-                @endauth
-            </div>
-            <div class="col-md-11">
-                <div class="discussion-text">
-                    {!! nl2br(e($discussion->content)) !!}
-                </div>
-                
-                @auth
-                    @if(auth()->id() === $discussion->user_id || auth()->user()->isAdmin())
-                        <div class="action-buttons">
-                            <a href="{{ route('discussions.edit', $discussion->slug) }}" class="action-btn">
-                                <i class="fas fa-edit mr-1"></i>Chỉnh sửa
-                            </a>
-                            @if(auth()->user()->isAdmin())
-                                <form method="POST" action="{{ route('discussions.destroy', $discussion->slug) }}" 
-                                      style="display: inline;" 
-                                      onsubmit="return confirm('Bạn có chắc muốn xóa thảo luận này?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn text-danger">
-                                        <i class="fas fa-trash mr-1"></i>Xóa
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
-                    @endif
-                @endauth
-            </div>
-        </div>
-    </div>
-
-    <!-- Replies -->
-    <div class="replies-section">
-        <h4 class="mb-3">
-            <i class="fas fa-comments mr-2"></i>
-            Trả lời ({{ $discussion->replies_count }})
-        </h4>
-        
-        @forelse($discussion->replies as $reply)
-            <div class="reply-card {{ $reply->is_best_answer ? 'best-answer' : '' }} {{ $reply->is_solution ? 'solution' : '' }}" 
-                 id="reply-{{ $reply->id }}">
-                <div class="row">
-                    <div class="col-md-1">
-                        @auth
-                            <div class="vote-buttons">
-                                <button class="vote-btn vote-up {{ $reply->getUserVoteType(auth()->id()) === 'up' ? 'voted-up' : '' }}" 
-                                        data-type="up" data-id="{{ $reply->id }}" data-model="reply">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Main Discussion -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Vote Buttons -->
+                        <div class="col-auto">
+                            <div class="d-flex flex-column align-items-center">
+                                <button class="btn btn-outline-success btn-sm mb-2" onclick="vote('up', {{ $discussion->id }})">
                                     <i class="fas fa-chevron-up"></i>
                                 </button>
-                                <div class="vote-count">{{ $reply->getVoteScore() }}</div>
-                                <button class="vote-btn vote-down {{ $reply->getUserVoteType(auth()->id()) === 'down' ? 'voted-down' : '' }}" 
-                                        data-type="down" data-id="{{ $reply->id }}" data-model="reply">
+                                <div class="fw-bold text-center">{{ $discussion->votes_count ?? 0 }}</div>
+                                <button class="btn btn-outline-danger btn-sm mt-2" onclick="vote('down', {{ $discussion->id }})">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
                             </div>
-                        @else
-                            <div class="vote-buttons">
-                                <div class="vote-btn">
-                                    <i class="fas fa-chevron-up"></i>
-                                </div>
-                                <div class="vote-count">{{ $reply->getVoteScore() }}</div>
-                                <div class="vote-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="col">
+                            <div class="mb-4">
+                                {!! $discussion->content !!}
                             </div>
-                        @endauth
-                    </div>
-                    <div class="col-md-11">
-                        <div class="d-flex align-items-center mb-2">
-                            <img src="{{ $reply->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($reply->user->name) . '&background=007bff&color=fff' }}" 
-                                 alt="Avatar" class="user-avatar-small mr-2">
-                            <strong>{{ $reply->user->name }}</strong>
-                            <span class="text-muted mx-2">•</span>
-                            <span class="text-muted">{{ $reply->created_at->diffForHumans() }}</span>
                             
-                            @if($reply->is_best_answer)
-                                <span class="badge-best-answer">
-                                    <i class="fas fa-star mr-1"></i>Câu trả lời hay nhất
-                                </span>
-                            @endif
-                            
-                            @if($reply->is_solution)
-                                <span class="badge-solution">
-                                    <i class="fas fa-check mr-1"></i>Giải pháp
-                                </span>
-                            @endif
-                        </div>
-                        
-                        <div class="reply-content">
-                            {!! nl2br(e($reply->content)) !!}
-                        </div>
-                        
-                        @auth
-                            <div class="action-buttons">
-                                <button class="action-btn reply-to-btn" data-reply-id="{{ $reply->id }}">
-                                    <i class="fas fa-reply mr-1"></i>Trả lời
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button class="btn btn-primary btn-sm" onclick="showReplyForm()">
+                                    <i class="fas fa-reply me-1"></i>Trả lời
                                 </button>
                                 
-                                @if(auth()->id() === $discussion->user_id && !$reply->is_best_answer)
-                                    <form method="POST" action="{{ route('discussion-replies.best-answer', $reply) }}" style="display: inline;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="action-btn text-success">
-                                            <i class="fas fa-star mr-1"></i>Đánh dấu hay nhất
-                                        </button>
-                                    </form>
-                                @endif
+                                @can('update', $discussion)
+                                    <a href="{{ route('discussions.edit', $discussion) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit me-1"></i>Sửa
+                                    </a>
+                                @endcan
                                 
-                                @if((auth()->id() === $discussion->user_id || auth()->user()->isAdmin()) && !$reply->is_solution)
-                                    <form method="POST" action="{{ route('discussion-replies.solution', $reply) }}" style="display: inline;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="action-btn text-primary">
-                                            <i class="fas fa-check mr-1"></i>Đánh dấu giải pháp
-                                        </button>
-                                    </form>
-                                @endif
-                                
-                                @if(auth()->id() === $reply->user_id || auth()->user()->isAdmin())
-                                    <form method="POST" action="{{ route('discussion-replies.destroy', $reply) }}" 
-                                          style="display: inline;" 
-                                          onsubmit="return confirm('Bạn có chắc muốn xóa câu trả lời này?')">
+                                @can('delete', $discussion)
+                                    <form method="POST" action="{{ route('discussions.destroy', $discussion) }}" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="action-btn text-danger">
-                                            <i class="fas fa-trash mr-1"></i>Xóa
+                                        <button type="submit" class="btn btn-danger btn-sm" 
+                                                onclick="return confirm('Bạn có chắc muốn xóa thảo luận này?')">
+                                            <i class="fas fa-trash me-1"></i>Xóa
                                         </button>
                                     </form>
-                                @endif
+                                @endcan
                             </div>
-                        @endauth
-                        
-                        <!-- Nested Replies -->
-                        @if($reply->children->count() > 0)
-                            <div class="nested-replies mt-3">
-                                @foreach($reply->children as $childReply)
-                                    <div class="nested-reply">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <img src="{{ $childReply->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($childReply->user->name) . '&background=28a745&color=fff' }}" 
-                                                 alt="Avatar" class="user-avatar-small mr-2">
-                                            <strong>{{ $childReply->user->name }}</strong>
-                                            <span class="text-muted mx-2">•</span>
-                                            <span class="text-muted">{{ $childReply->created_at->diffForHumans() }}</span>
-                                        </div>
-                                        <div class="reply-content">
-                                            {!! nl2br(e($childReply->content)) !!}
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>
-        @empty
-            <div class="text-center py-4">
-                <i class="fas fa-comments fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">Chưa có câu trả lời nào</h5>
-                <p class="text-muted">Hãy là người đầu tiên trả lời thảo luận này!</p>
-            </div>
-        @endforelse
-    </div>
 
-    <!-- Reply Form -->
-    @auth
-        @if($discussion->status === 'open')
-            <div class="reply-form">
-                <h5 class="mb-3">
-                    <i class="fas fa-reply mr-2"></i>Trả lời thảo luận
-                </h5>
-                <form method="POST" action="{{ route('discussion-replies.store', $discussion) }}" id="reply-form">
-                    @csrf
-                    <input type="hidden" name="parent_id" id="parent_id">
-                    <div class="form-group">
-                        <textarea class="form-control @error('content') is-invalid @enderror" 
-                                  name="content" 
-                                  rows="4" 
-                                  placeholder="Nhập câu trả lời của bạn..."
-                                  required>{{ old('content') }}</textarea>
-                        @error('content')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+            <!-- Replies -->
+            <div id="replies-section">
+                @if($discussion->replies && $discussion->replies->count() > 0)
+                    @foreach($discussion->replies as $reply)
+                        <div id="reply-{{ $reply->id }}" class="card shadow-sm mb-3 {{ $reply->is_best_answer ? 'border-success' : '' }} {{ $reply->is_solution ? 'border-primary' : '' }}">
+                            @if($reply->is_best_answer)
+                                <div class="card-header bg-success text-white">
+                                    <i class="fas fa-check-circle me-1"></i>Câu trả lời tốt nhất
+                                </div>
+                            @elseif($reply->is_solution)
+                                <div class="card-header bg-primary text-white">
+                                    <i class="fas fa-lightbulb me-1"></i>Giải pháp
+                                </div>
+                            @endif
+                            
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Vote Buttons -->
+                                    <div class="col-auto">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <button class="btn btn-outline-success btn-sm mb-2" onclick="vote('up', {{ $reply->id }}, 'reply')">
+                                                <i class="fas fa-chevron-up"></i>
+                                            </button>
+                                            <div class="fw-bold text-center">{{ $reply->votes_count ?? 0 }}</div>
+                                            <button class="btn btn-outline-danger btn-sm mt-2" onclick="vote('down', {{ $reply->id }}, 'reply')">
+                                                <i class="fas fa-chevron-down"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reply Content -->
+                                    <div class="col">
+                                        <!-- User Info -->
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="{{ $reply->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($reply->user->name) . '&background=f8f9fa&color=007bff' }}" 
+                                                 alt="Avatar" class="rounded-circle me-2" width="32" height="32">
+                                            <div>
+                                                <div class="fw-bold">{{ $reply->user->name }}</div>
+                                                <small class="text-muted">{{ $reply->created_at->diffForHumans() }}</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Content -->
+                                        <div class="mb-3">
+                                            {!! $reply->content !!}
+                                        </div>
+                                        
+                                        <!-- Reply Actions -->
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="replyToReply({{ $reply->id }})">
+                                                <i class="fas fa-reply me-1"></i>Trả lời
+                                            </button>
+                                            
+                                            @can('update', $reply)
+                                                <button class="btn btn-outline-warning btn-sm">
+                                                    <i class="fas fa-edit me-1"></i>Sửa
+                                                </button>
+                                            @endcan
+                                            
+                                            @can('delete', $reply)
+                                                <form method="POST" action="{{ route('discussion-replies.destroy', $reply) }}" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                                            onclick="return confirm('Bạn có chắc muốn xóa câu trả lời này?')">
+                                                        <i class="fas fa-trash me-1"></i>Xóa
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Chưa có câu trả lời nào</h5>
+                            <p class="text-muted">Hãy là người đầu tiên trả lời thảo luận này!</p>
+                            <button class="btn btn-primary" onclick="showReplyForm()">
+                                <i class="fas fa-reply me-1"></i>Trả lời ngay
+                            </button>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <button type="button" class="btn btn-secondary mr-2" id="cancel-reply" style="display: none;">
-                            Hủy
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane mr-2"></i>Gửi trả lời
-                        </button>
-                    </div>
-                </form>
+                @endif
             </div>
-        @else
-            <div class="alert alert-warning text-center">
-                <i class="fas fa-lock mr-2"></i>
-                Thảo luận này đã được đóng, không thể trả lời thêm.
+
+            <!-- Reply Form -->
+            <div id="reply-form" class="card shadow-sm mt-4" style="display: none;">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-reply me-2"></i>Trả lời thảo luận
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('discussion-replies.store', $discussion) }}">
+                        @csrf
+                        
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Nội dung trả lời</label>
+                            <textarea class="form-control" name="content" id="reply-content" rows="6" 
+                                      placeholder="Nhập câu trả lời của bạn..." required></textarea>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-1"></i>Gửi trả lời
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="hideReplyForm()">
+                                <i class="fas fa-times me-1"></i>Hủy
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        @endif
-    @else
-        <div class="reply-form text-center">
-            <h5 class="mb-3">Bạn cần đăng nhập để trả lời</h5>
-            <a href="{{ route('login') }}" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt mr-2"></i>Đăng nhập
-            </a>
         </div>
-    @endauth
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Discussion Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Thông tin thảo luận
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Tác giả:</small>
+                        <div class="fw-bold">{{ $discussion->user->name }}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Danh mục:</small>
+                        <div class="fw-bold">{{ $discussion->category->name }}</div>
+                    </div>
+                    
+                    @if($discussion->course)
+                        <div class="mb-3">
+                            <small class="text-muted">Khóa học:</small>
+                            <div class="fw-bold">{{ $discussion->course->title }}</div>
+                        </div>
+                    @endif
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Tạo lúc:</small>
+                        <div class="fw-bold">{{ $discussion->created_at->format('d/m/Y H:i') }}</div>
+                    </div>
+                    
+                    @if($discussion->updated_at != $discussion->created_at)
+                        <div class="mb-3">
+                            <small class="text-muted">Cập nhật:</small>
+                            <div class="fw-bold">{{ $discussion->updated_at->diffForHumans() }}</div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Thao tác nhanh
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="showReplyForm()">
+                            <i class="fas fa-reply me-1"></i>Trả lời
+                        </button>
+                        
+                        <a href="{{ route('discussions.index') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại danh sách
+                        </a>
+                        
+                        <button class="btn btn-outline-info btn-sm" onclick="shareDiscussion()">
+                            <i class="fas fa-share me-1"></i>Chia sẻ
+                        </button>
+                        
+                        @auth
+                            <button class="btn btn-outline-warning btn-sm" onclick="bookmarkDiscussion()">
+                                <i class="fas fa-bookmark me-1"></i>Lưu thảo luận
+                            </button>
+                        @endauth
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // Vote functionality
-    $('.vote-btn').click(function() {
-        const type = $(this).data('type');
-        const id = $(this).data('id');
-        const model = $(this).data('model');
-        const button = $(this);
-        
-        let url;
-        if (model === 'discussion') {
-            url = `/discussions/${id}/vote`;
+// Simple JavaScript for Bootstrap 5 only
+function vote(type, id, itemType = 'discussion') {
+    const url = itemType === 'discussion'
+        ? `/api/discussions/${id}/vote`
+        : `/api/discussion-replies/${id}/vote`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ type: type })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update vote count - find the vote count element
+            const voteElements = document.querySelectorAll('.fw-bold.text-center');
+            voteElements.forEach(element => {
+                if (element.closest('.d-flex.flex-column.align-items-center')) {
+                    const buttons = element.closest('.d-flex.flex-column.align-items-center').querySelectorAll('button');
+                    const upButton = Array.from(buttons).find(btn => btn.onclick && btn.onclick.toString().includes(`${id}`));
+                    if (upButton) {
+                        element.textContent = data.votes_count;
+                    }
+                }
+            });
+
+            // Show success toast
+            showToast('Vote đã được cập nhật!', 'success');
         } else {
-            url = `/discussion-replies/${id}/vote`;
+            showToast(data.message || 'Có lỗi xảy ra', 'danger');
         }
-        
-        $.ajax({
-            url: url,
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                type: type
-            },
-            success: function(response) {
-                // Update vote count
-                button.siblings('.vote-count').text(response.votes_count);
-                
-                // Update button states
-                const voteButtons = button.parent();
-                voteButtons.find('.vote-btn').removeClass('voted-up voted-down');
-                
-                if (response.user_vote === 'up') {
-                    voteButtons.find('.vote-up').addClass('voted-up');
-                } else if (response.user_vote === 'down') {
-                    voteButtons.find('.vote-down').addClass('voted-down');
-                }
-                
-                // Show success message
-                if (response.message) {
-                    // You can add a toast notification here
-                    console.log(response.message);
-                }
-            },
-            error: function() {
-                alert('Có lỗi xảy ra. Vui lòng thử lại.');
-            }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Có lỗi xảy ra khi vote', 'danger');
+    });
+}
+
+function showReplyForm() {
+    const replyForm = document.getElementById('reply-form');
+    replyForm.style.display = 'block';
+    replyForm.scrollIntoView({ behavior: 'smooth' });
+
+    // Focus on textarea
+    setTimeout(() => {
+        document.getElementById('reply-content').focus();
+    }, 300);
+}
+
+function hideReplyForm() {
+    const replyForm = document.getElementById('reply-form');
+    replyForm.style.display = 'none';
+
+    // Clear form
+    document.getElementById('reply-content').value = '';
+}
+
+function replyToReply(replyId) {
+    showReplyForm();
+
+    // Add mention to textarea
+    const textarea = document.getElementById('reply-content');
+    const replyCard = document.querySelector(`[onclick*="${replyId}"]`).closest('.card');
+    const replyAuthor = replyCard.querySelector('.fw-bold').textContent;
+    textarea.value = `@${replyAuthor} `;
+    textarea.focus();
+
+    // Set cursor at end
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+}
+
+function shareDiscussion() {
+    if (navigator.share) {
+        navigator.share({
+            title: document.title,
+            url: window.location.href
         });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showToast('Link đã được sao chép!', 'info');
+        });
+    }
+}
+
+function bookmarkDiscussion() {
+    // Simple bookmark functionality
+    showToast('Tính năng bookmark sẽ được phát triển!', 'info');
+}
+
+// Simple toast function using Bootstrap 5
+function showToast(message, type = 'primary') {
+    // Create toast container if not exists
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+
+    // Create toast
+    const toastId = 'toast-' + Date.now();
+    const toastHTML = `
+        <div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+
+    // Show toast
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: 3000
     });
-    
-    // Reply to specific comment
-    $('.reply-to-btn').click(function() {
-        const replyId = $(this).data('reply-id');
-        $('#parent_id').val(replyId);
-        $('#cancel-reply').show();
-        $('textarea[name="content"]').attr('placeholder', 'Trả lời câu hỏi này...');
-        $('textarea[name="content"]').focus();
+    toast.show();
+
+    // Remove toast element after hidden
+    toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
     });
-    
-    // Cancel reply
-    $('#cancel-reply').click(function() {
-        $('#parent_id').val('');
-        $(this).hide();
-        $('textarea[name="content"]').attr('placeholder', 'Nhập câu trả lời của bạn...');
+}
+
+// Auto-expand textarea
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('reply-content');
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + Enter to submit reply
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            const replyForm = document.getElementById('reply-form');
+            if (replyForm.style.display !== 'none') {
+                const submitBtn = replyForm.querySelector('button[type="submit"]');
+                submitBtn.click();
+            }
+        }
+
+        // Escape to hide reply form
+        if (e.key === 'Escape') {
+            hideReplyForm();
+        }
     });
 });
 </script>
 @endpush
-@endsection

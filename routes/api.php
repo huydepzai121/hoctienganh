@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Discussion Voting API
+Route::middleware('auth')->group(function () {
+    Route::post('/discussions/{discussion}/vote', [App\Http\Controllers\DiscussionVoteController::class, 'voteDiscussion']);
+    Route::post('/discussion-replies/{reply}/vote', [App\Http\Controllers\DiscussionVoteController::class, 'voteReply']);
+});

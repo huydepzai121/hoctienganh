@@ -89,9 +89,8 @@ class DiscussionVoteController extends Controller
             return redirect()->route('discussions.show', $votable->slug)
                            ->with('success', $message);
         } else {
-            return redirect()->route('discussions.show', $votable->discussion->slug)
-                           ->with('success', $message)
-                           ->fragment('reply-' . $votable->id);
+            return redirect()->to(route('discussions.show', $votable->discussion->slug) . '#reply-' . $votable->id)
+                           ->with('success', $message);
         }
     }
 }

@@ -16,7 +16,18 @@ class CourseController extends Controller
 
         // Filter by category
         if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
+            $categoryValue = $request->category;
+
+            // Check if it's a slug or ID
+            if (is_numeric($categoryValue)) {
+                $query->where('category_id', $categoryValue);
+            } else {
+                // Find category by slug
+                $category = Category::where('slug', $categoryValue)->first();
+                if ($category) {
+                    $query->where('category_id', $category->id);
+                }
+            }
         }
 
         // Filter by level

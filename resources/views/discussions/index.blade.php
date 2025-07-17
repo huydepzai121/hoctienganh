@@ -2,352 +2,323 @@
 
 @section('title', 'Thảo luận')
 
-@push('styles')
-<style>
-.discussion-card {
-    transition: all 0.3s ease;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
-}
-
-.discussion-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.category-badge {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 15px;
-    text-decoration: none;
-}
-
-.stats-item {
-    text-align: center;
-    padding: 0.5rem;
-}
-
-.stats-number {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #495057;
-}
-
-.stats-label {
-    font-size: 0.8rem;
-    color: #6c757d;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.discussion-meta {
-    font-size: 0.9rem;
-    color: #6c757d;
-}
-
-.pinned-badge {
-    background: linear-gradient(45deg, #ffc107, #ff8f00);
-    color: white;
-    font-size: 0.7rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 10px;
-    margin-right: 0.5rem;
-}
-
-.featured-badge {
-    background: linear-gradient(45deg, #dc3545, #c82333);
-    color: white;
-    font-size: 0.7rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 10px;
-    margin-right: 0.5rem;
-}
-
-.filter-card {
-    background: #f8f9fa;
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.create-btn {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border: none;
-    border-radius: 25px;
-    padding: 0.75rem 2rem;
-    color: white;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.create-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,123,255,0.3);
-    color: white;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: #6c757d;
-}
-
-.empty-state i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
-}
-</style>
-@endpush
-
 @section('content')
-<div class="container">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1 class="h2 font-weight-bold">
-                <i class="fas fa-comments text-primary mr-2"></i>
-                Thảo luận
-            </h1>
-            <p class="text-muted">Tham gia thảo luận và đặt câu hỏi với cộng đồng học tiếng Anh</p>
-        </div>
-        <div class="col-md-4 text-right">
-            @auth
-                <a href="{{ route('discussions.create') }}" class="btn create-btn">
-                    <i class="fas fa-plus mr-2"></i>Tạo thảo luận mới
-                </a>
-            @else
-                <a href="{{ route('login') }}" class="btn create-btn">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Đăng nhập để thảo luận
-                </a>
-            @endauth
-        </div>
-    </div>
-
-    <!-- Filters -->
-    <div class="filter-card">
-        <form method="GET" action="{{ route('discussions.index') }}" class="row align-items-end">
-            <div class="col-md-3">
-                <label class="form-label font-weight-bold">
-                    <i class="fas fa-folder mr-1"></i>Danh mục
-                </label>
-                <select name="category" class="form-control">
-                    <option value="">Tất cả danh mục</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label font-weight-bold">
-                    <i class="fas fa-book mr-1"></i>Khóa học
-                </label>
-                <select name="course" class="form-control">
-                    <option value="">Tất cả khóa học</option>
-                    @foreach($courses as $course)
-                        <option value="{{ $course->id }}" {{ request('course') == $course->id ? 'selected' : '' }}>
-                            {{ $course->title }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="form-label font-weight-bold">
-                    <i class="fas fa-filter mr-1"></i>Trạng thái
-                </label>
-                <select name="status" class="form-control">
-                    <option value="">Tất cả</option>
-                    <option value="open" {{ request('status') === 'open' ? 'selected' : '' }}>Đang mở</option>
-                    <option value="solved" {{ request('status') === 'solved' ? 'selected' : '' }}>Đã giải quyết</option>
-                    <option value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>Đã đóng</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="form-label font-weight-bold">
-                    <i class="fas fa-sort mr-1"></i>Sắp xếp
-                </label>
-                <select name="sort" class="form-control">
-                    <option value="latest" {{ request('sort') === 'latest' ? 'selected' : '' }}>Mới nhất</option>
-                    <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>Phổ biến</option>
-                    <option value="most_replies" {{ request('sort') === 'most_replies' ? 'selected' : '' }}>Nhiều trả lời</option>
-                    <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Cũ nhất</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary btn-block">
-                    <i class="fas fa-search mr-2"></i>Lọc
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Search -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <form method="GET" action="{{ route('discussions.index') }}" class="input-group">
-                <input type="text" name="search" class="form-control form-control-lg" 
-                       placeholder="Tìm kiếm thảo luận..." value="{{ request('search') }}">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-4">
-            <div class="text-muted">
-                Tìm thấy {{ number_format($discussions->total()) }} thảo luận
-            </div>
-        </div>
-    </div>
-
-    <!-- Categories Quick Filter -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex flex-wrap">
-                <a href="{{ route('discussions.index') }}" 
-                   class="category-badge {{ !request('category') ? 'bg-primary text-white' : 'bg-light text-dark' }} mr-2 mb-2">
-                    <i class="fas fa-th mr-1"></i>Tất cả
-                </a>
-                @foreach($categories as $category)
-                    <a href="{{ route('discussions.index', ['category' => $category->id]) }}" 
-                       class="category-badge {{ request('category') == $category->id ? 'text-white' : 'text-dark' }} mr-2 mb-2"
-                       style="background-color: {{ request('category') == $category->id ? $category->color : '#f8f9fa' }}">
-                        @if($category->icon)
-                            <i class="{{ $category->icon }} mr-1"></i>
-                        @endif
-                        {{ $category->name }}
+<!-- Hero Section -->
+<div class="bg-primary text-white py-5 mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-comments me-3"></i>Thảo luận
+                </h1>
+                <p class="lead mb-4">Tham gia thảo luận và đặt câu hỏi với cộng đồng học tiếng Anh</p>
+                
+                @auth
+                    <a href="{{ route('discussions.create') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-plus me-2"></i>Tạo thảo luận mới
                     </a>
-                @endforeach
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập để tham gia
+                    </a>
+                @endauth
+            </div>
+            
+            <div class="col-lg-4 text-center">
+                <div class="row g-3">
+                    <div class="col-4">
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <div class="h4 mb-0">{{ $totalDiscussions ?? 0 }}</div>
+                            <small>Thảo luận</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <div class="h4 mb-0">{{ $totalReplies ?? 0 }}</div>
+                            <small>Trả lời</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <div class="h4 mb-0">{{ $activeUsers ?? 0 }}</div>
+                            <small>Thành viên</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Discussions List -->
+<div class="container">
     <div class="row">
-        <div class="col-12">
-            @forelse($discussions as $discussion)
-                <div class="discussion-card card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="d-flex align-items-start mb-2">
-                                    @if($discussion->is_pinned)
-                                        <span class="pinned-badge">
-                                            <i class="fas fa-thumbtack mr-1"></i>Ghim
-                                        </span>
-                                    @endif
-                                    @if($discussion->is_featured)
-                                        <span class="featured-badge">
-                                            <i class="fas fa-star mr-1"></i>Nổi bật
-                                        </span>
-                                    @endif
-                                    <h5 class="mb-0">
-                                        <a href="{{ route('discussions.show', $discussion->slug) }}" 
-                                           class="text-dark text-decoration-none">
-                                            {{ $discussion->title }}
-                                        </a>
-                                    </h5>
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-filter me-2"></i>Bộ lọc
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <!-- Search -->
+                    <form method="GET" action="{{ route('discussions.index') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Tìm kiếm</label>
+                            <input type="text" class="form-control" name="search" 
+                                   value="{{ request('search') }}" placeholder="Tìm thảo luận...">
+                        </div>
+                        
+                        <!-- Category Filter -->
+                        <div class="mb-3">
+                            <label class="form-label">Danh mục</label>
+                            <select class="form-select" name="category">
+                                <option value="">Tất cả danh mục</option>
+                                @foreach($categories ?? [] as $category)
+                                    <option value="{{ $category->id }}" 
+                                            {{ request('category') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Course Filter -->
+                        <div class="mb-3">
+                            <label class="form-label">Khóa học</label>
+                            <select class="form-select" name="course">
+                                <option value="">Tất cả khóa học</option>
+                                @foreach($courses ?? [] as $course)
+                                    <option value="{{ $course->id }}" 
+                                            {{ request('course') == $course->id ? 'selected' : '' }}>
+                                        {{ $course->title }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Status Filter -->
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" name="status">
+                                <option value="">Tất cả</option>
+                                <option value="open" {{ request('status') == 'open' ? 'selected' : '' }}>Mở</option>
+                                <option value="solved" {{ request('status') == 'solved' ? 'selected' : '' }}>Đã giải quyết</option>
+                                <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Đã đóng</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Sort -->
+                        <div class="mb-3">
+                            <label class="form-label">Sắp xếp</label>
+                            <select class="form-select" name="sort">
+                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Mới nhất</option>
+                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Cũ nhất</option>
+                                <option value="most_replies" {{ request('sort') == 'most_replies' ? 'selected' : '' }}>Nhiều trả lời</option>
+                                <option value="most_votes" {{ request('sort') == 'most_votes' ? 'selected' : '' }}>Nhiều vote</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i>Lọc
+                            </button>
+                            <a href="{{ route('discussions.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Xóa bộ lọc
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Quick Categories -->
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-tags me-2"></i>Danh mục phổ biến
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        @foreach($popularCategories ?? [] as $category)
+                            <a href="{{ route('discussions.index', ['category' => $category->id]) }}" 
+                               class="btn btn-outline-primary btn-sm text-start">
+                                @if($category->icon)
+                                    <i class="{{ $category->icon }} me-2"></i>
+                                @endif
+                                {{ $category->name }}
+                                <span class="badge bg-primary ms-auto">{{ $category->discussions_count ?? 0 }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Action Bar -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="mb-0">
+                        @if(request('search'))
+                            Kết quả tìm kiếm: "{{ request('search') }}"
+                        @elseif(request('category'))
+                            Danh mục: {{ $categories->find(request('category'))->name ?? 'Không xác định' }}
+                        @else
+                            Tất cả thảo luận
+                        @endif
+                    </h5>
+                    <small class="text-muted">{{ $discussions->total() ?? 0 }} thảo luận</small>
+                </div>
+                
+                @auth
+                    <a href="{{ route('discussions.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Tạo mới
+                    </a>
+                @endauth
+            </div>
+            
+            <!-- Discussions List -->
+            @if($discussions && $discussions->count() > 0)
+                @foreach($discussions as $discussion)
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Vote & Stats -->
+                                <div class="col-auto">
+                                    <div class="text-center">
+                                        <div class="fw-bold text-success">{{ $discussion->votes_count ?? 0 }}</div>
+                                        <small class="text-muted">votes</small>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <div class="fw-bold text-primary">{{ $discussion->replies_count ?? 0 }}</div>
+                                        <small class="text-muted">trả lời</small>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <div class="fw-bold text-info">{{ $discussion->views_count ?? 0 }}</div>
+                                        <small class="text-muted">lượt xem</small>
+                                    </div>
                                 </div>
                                 
-                                <div class="mb-2">
-                                    <a href="{{ route('discussions.index', ['category' => $discussion->category->id]) }}" 
-                                       class="category-badge text-white text-decoration-none"
-                                       style="background-color: {{ $discussion->category->color }}">
-                                        @if($discussion->category->icon)
-                                            <i class="{{ $discussion->category->icon }} mr-1"></i>
+                                <!-- Content -->
+                                <div class="col">
+                                    <!-- Title & Badges -->
+                                    <div class="mb-2">
+                                        @if($discussion->is_pinned)
+                                            <span class="badge bg-warning text-dark me-1">
+                                                <i class="fas fa-thumbtack me-1"></i>Ghim
+                                            </span>
                                         @endif
-                                        {{ $discussion->category->name }}
-                                    </a>
-                                    
-                                    @if($discussion->course)
-                                        <a href="{{ route('discussions.index', ['course' => $discussion->course->id]) }}" 
-                                           class="category-badge bg-info text-white text-decoration-none ml-2">
-                                            <i class="fas fa-book mr-1"></i>{{ $discussion->course->title }}
+                                        @if($discussion->is_featured)
+                                            <span class="badge bg-danger me-1">
+                                                <i class="fas fa-star me-1"></i>Nổi bật
+                                            </span>
+                                        @endif
+                                        @if($discussion->status === 'solved')
+                                            <span class="badge bg-success me-1">
+                                                <i class="fas fa-check-circle me-1"></i>Đã giải quyết
+                                            </span>
+                                        @elseif($discussion->status === 'closed')
+                                            <span class="badge bg-secondary me-1">
+                                                <i class="fas fa-lock me-1"></i>Đã đóng
+                                            </span>
+                                        @endif
+                                        
+                                        <a href="{{ route('discussions.show', $discussion->slug) }}" 
+                                           class="text-decoration-none">
+                                            <h6 class="mb-0 text-dark">{{ $discussion->title }}</h6>
                                         </a>
-                                    @endif
+                                    </div>
                                     
-                                    @if($discussion->status === 'solved')
-                                        <span class="category-badge bg-success text-white ml-2">
-                                            <i class="fas fa-check mr-1"></i>Đã giải quyết
-                                        </span>
-                                    @elseif($discussion->status === 'closed')
-                                        <span class="category-badge bg-secondary text-white ml-2">
-                                            <i class="fas fa-lock mr-1"></i>Đã đóng
-                                        </span>
-                                    @endif
-                                </div>
-                                
-                                <div class="discussion-meta">
-                                    <img src="{{ $discussion->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($discussion->user->name) . '&background=007bff&color=fff' }}" 
-                                         alt="Avatar" class="user-avatar mr-2">
-                                    <strong>{{ $discussion->user->name }}</strong>
-                                    <span class="mx-2">•</span>
-                                    <span>{{ $discussion->created_at->diffForHumans() }}</span>
-                                    @if($discussion->last_activity_at && $discussion->last_activity_at != $discussion->created_at)
-                                        <span class="mx-2">•</span>
-                                        <span>Hoạt động cuối: {{ $discussion->last_activity_at->diffForHumans() }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="row text-center">
-                                    <div class="col-4">
-                                        <div class="stats-item">
-                                            <div class="stats-number">{{ $discussion->votes_count }}</div>
-                                            <div class="stats-label">Votes</div>
+                                    <!-- Excerpt -->
+                                    <p class="text-muted mb-2">
+                                        {{ Str::limit(strip_tags($discussion->content), 150) }}
+                                    </p>
+                                    
+                                    <!-- Meta Info -->
+                                    <div class="d-flex flex-wrap align-items-center gap-3">
+                                        <!-- Author -->
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ $discussion->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($discussion->user->name) . '&background=f8f9fa&color=007bff' }}" 
+                                                 alt="Avatar" class="rounded-circle me-2" width="24" height="24">
+                                            <small class="text-muted">{{ $discussion->user->name }}</small>
                                         </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="stats-item">
-                                            <div class="stats-number">{{ $discussion->replies_count }}</div>
-                                            <div class="stats-label">Trả lời</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="stats-item">
-                                            <div class="stats-number">{{ number_format($discussion->views_count) }}</div>
-                                            <div class="stats-label">Lượt xem</div>
-                                        </div>
+                                        
+                                        <!-- Category -->
+                                        <a href="{{ route('discussions.index', ['category' => $discussion->category->id]) }}" 
+                                           class="badge bg-primary text-decoration-none">
+                                            @if($discussion->category->icon)
+                                                <i class="{{ $discussion->category->icon }} me-1"></i>
+                                            @endif
+                                            {{ $discussion->category->name }}
+                                        </a>
+                                        
+                                        <!-- Course -->
+                                        @if($discussion->course)
+                                            <a href="{{ route('discussions.index', ['course' => $discussion->course->id]) }}" 
+                                               class="badge bg-info text-decoration-none">
+                                                <i class="fas fa-book me-1"></i>{{ $discussion->course->title }}
+                                            </a>
+                                        @endif
+                                        
+                                        <!-- Time -->
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>{{ $discussion->created_at->diffForHumans() }}
+                                        </small>
+                                        
+                                        <!-- Last Activity -->
+                                        @if($discussion->last_activity_at && $discussion->last_activity_at != $discussion->created_at)
+                                            <small class="text-muted">
+                                                <i class="fas fa-comment me-1"></i>{{ $discussion->last_activity_at->diffForHumans() }}
+                                            </small>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="empty-state">
-                    <i class="fas fa-comments"></i>
-                    <h5>Chưa có thảo luận nào</h5>
-                    <p>Hãy là người đầu tiên tạo thảo luận trong cộng đồng!</p>
-                    @auth
-                        <a href="{{ route('discussions.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus mr-2"></i>Tạo thảo luận đầu tiên
-                        </a>
-                    @endauth
-                </div>
-            @endforelse
-        </div>
-    </div>
-
-    <!-- Pagination -->
-    @if($discussions->hasPages())
-        <div class="row mt-4">
-            <div class="col-12">
+                @endforeach
+                
+                <!-- Pagination -->
                 <div class="d-flex justify-content-center">
                     {{ $discussions->appends(request()->query())->links() }}
                 </div>
-            </div>
+            @else
+                <!-- Empty State -->
+                <div class="card shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-comments fa-4x text-muted mb-4"></i>
+                        <h4 class="text-muted mb-3">Chưa có thảo luận nào</h4>
+                        <p class="text-muted mb-4">
+                            @if(request()->hasAny(['search', 'category', 'course', 'status']))
+                                Không tìm thấy thảo luận nào phù hợp với bộ lọc của bạn.
+                            @else
+                                Hãy là người đầu tiên tạo thảo luận!
+                            @endif
+                        </p>
+                        
+                        <div class="d-flex gap-2 justify-content-center">
+                            @auth
+                                <a href="{{ route('discussions.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i>Tạo thảo luận đầu tiên
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập để tạo thảo luận
+                                </a>
+                            @endauth
+                            
+                            @if(request()->hasAny(['search', 'category', 'course', 'status']))
+                                <a href="{{ route('discussions.index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Xóa bộ lọc
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
-    @endif
+    </div>
 </div>
 @endsection

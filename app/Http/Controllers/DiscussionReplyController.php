@@ -30,9 +30,8 @@ class DiscussionReplyController extends Controller
             'parent_id' => $request->parent_id
         ]);
 
-        return redirect()->route('discussions.show', $discussion->slug)
-                        ->with('success', 'Câu trả lời đã được thêm!')
-                        ->fragment('reply-' . $reply->id);
+        return redirect()->to(route('discussions.show', $discussion->slug) . '#reply-' . $reply->id)
+                        ->with('success', 'Câu trả lời đã được thêm!');
     }
 
     /**
@@ -50,9 +49,8 @@ class DiscussionReplyController extends Controller
             'content' => $request->content
         ]);
 
-        return redirect()->route('discussions.show', $reply->discussion->slug)
-                        ->with('success', 'Câu trả lời đã được cập nhật!')
-                        ->fragment('reply-' . $reply->id);
+        return redirect()->to(route('discussions.show', $reply->discussion->slug) . '#reply-' . $reply->id)
+                        ->with('success', 'Câu trả lời đã được cập nhật!');
     }
 
     /**
@@ -83,9 +81,8 @@ class DiscussionReplyController extends Controller
 
         $reply->markAsBestAnswer();
 
-        return redirect()->route('discussions.show', $discussion->slug)
-                        ->with('success', 'Đã đánh dấu là câu trả lời hay nhất!')
-                        ->fragment('reply-' . $reply->id);
+        return redirect()->to(route('discussions.show', $discussion->slug) . '#reply-' . $reply->id)
+                        ->with('success', 'Đã đánh dấu là câu trả lời hay nhất!');
     }
 
     /**
@@ -102,8 +99,7 @@ class DiscussionReplyController extends Controller
 
         $reply->markAsSolution();
 
-        return redirect()->route('discussions.show', $discussion->slug)
-                        ->with('success', 'Đã đánh dấu là giải pháp!')
-                        ->fragment('reply-' . $reply->id);
+        return redirect()->to(route('discussions.show', $discussion->slug) . '#reply-' . $reply->id)
+                        ->with('success', 'Đã đánh dấu là giải pháp!');
     }
 }
